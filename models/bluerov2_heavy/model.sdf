@@ -38,6 +38,22 @@
         </geometry>
       </collision>
 
+      <!-- Full-size hull (0.457 x 0.575 x 0.254 m, matching the visual mesh)
+           for contacts, so the vehicle can't sail through gates and posts.
+           It is a MESH on purpose: graded buoyancy (used by every world this
+           model runs in) skips mesh collisions, so the thin box above stays
+           the only buoyancy volume and the trim is unchanged. A box here
+           would add ~53 kg of lift. -->
+      <collision name="hull_collision">
+        <pose>0.0 0.0 0.036 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://bluerov2_heavy/meshes/hull_box.stl</uri>
+            <scale>0.457 0.575 0.254</scale>
+          </mesh>
+        </geometry>
+      </collision>
+
       <!-- IMU sensor gyro and accel data will be sent to ArduSub -->
       <sensor name="imu_sensor" type="imu">
         <!-- Transform from the Gazebo body frame (x-forward, y-left, z-up)
@@ -95,7 +111,13 @@
            visual odometry) can resolve it via a static base_link TF. -->
       <sensor name="front_camera_depth" type="rgbd_camera">
         <gz_frame_id>front_camera_depth_optical</gz_frame_id>
-        <pose>0.25 0 0.05 0 0 0</pose>
+        <!-- pitched 25 deg down: the pool floor fills the lower ~2/3 of the
+             view for visual odometry (level, it mostly saw open water), while
+             the top edge stays ~2 deg above horizontal so obstacles at the
+             AUV's own height are still in view for obstacle avoidance
+             (mira_sim obstacle_distance.py). Keep in sync with
+             src/vision_nav/bridge.sh CAMERA_PITCH. -->
+        <pose>0.25 0 0.05 0 0.4363 0</pose>
         <camera>
           <horizontal_fov>1.204</horizontal_fov>
           <image>
