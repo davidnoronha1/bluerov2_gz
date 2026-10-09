@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<sdf version="1.6">
+<sdf version="1.11">
   <model name="bluerov2_heavy">
     <pose>0 0 0 0 0 0</pose>
 
@@ -17,6 +17,18 @@
           <iyz>0</iyz>
           <izz>0.37</izz>
         </inertia>
+        <!-- Added mass M_A (von Benzon et al. 2022), about the link origin.
+             Handled implicitly by the physics engine: the Hydrodynamics
+             plugin's explicit added-mass term diverges when M_A > m (heave
+             here: 18.68 kg vs 13 kg), so it is disabled there. -->
+        <fluid_added_mass>
+          <xx>6.36</xx> <xy>0</xy> <xz>0</xz> <xp>0</xp> <xq>0</xq> <xr>0</xr>
+          <yy>7.12</yy> <yz>0</yz> <yp>0</yp> <yq>0</yq> <yr>0</yr>
+          <zz>18.68</zz> <zp>0</zp> <zq>0</zq> <zr>0</zr>
+          <pp>0.189</pp> <pq>0</pq> <pr>0</pr>
+          <qq>0.135</qq> <qr>0</qr>
+          <rr>0.222</rr>
+        </fluid_added_mass>
       </inertial>
 
       <visual name="base_link_visual">
@@ -167,27 +179,33 @@
         name="gz::sim::systems::Hydrodynamics">
       <link_name>base_link</link_name>
       <water_density>1000.0</water_density>
+      <!-- Coefficients from von Benzon et al. 2022, "An Open-Source Benchmark
+           Simulator: Control of a BlueROV2 Underwater Robot", JMSE 10(12) 1898.
+           Gazebo uses stability-derivative signs (negative = opposing motion). -->
+      <!-- Added mass is applied via <fluid_added_mass> on base_link; the
+           values below are kept only for the added-mass Coriolis term C_A. -->
+      <disable_added_mass>true</disable_added_mass>
       <!-- Added mass: -->
-      <xDotU>0</xDotU>
-      <yDotV>0</yDotV>
-      <zDotW>0</zDotW>
-      <kDotP>0</kDotP>
-      <mDotQ>0</mDotQ>
-      <nDotR>0</nDotR>
+      <xDotU>-6.36</xDotU>
+      <yDotV>-7.12</yDotV>
+      <zDotW>-18.68</zDotW>
+      <kDotP>-0.189</kDotP>
+      <mDotQ>-0.135</mDotQ>
+      <nDotR>-0.222</nDotR>
       <!-- First order stability derivative: -->
-      <xU>0</xU>
+      <xU>-13.7</xU>
       <yV>0</yV>
-      <zW>0</zW>
+      <zW>-33</zW>
       <kP>0</kP>
-      <mQ>0</mQ>
+      <mQ>-0.8</mQ>
       <nR>0</nR>
       <!-- Second order stability derivative: -->
-      <xUabsU>-58.42</xUabsU>
-      <yVabsV>-55.137</yVabsV>
-      <zWabsW>-124.818</zWabsW>
-      <kPabsP>-4.0</kPabsP>
-      <mQabsQ>-4.0</mQabsQ>
-      <nRabsR>-4.0</nRabsR>
+      <xUabsU>-141</xUabsU>
+      <yVabsV>-217</yVabsV>
+      <zWabsW>-190</zWabsW>
+      <kPabsP>-1.19</kPabsP>
+      <mQabsQ>-0.47</mQabsQ>
+      <nRabsR>-1.5</nRabsR>
     </plugin>
 
     <link name="thruster1">
