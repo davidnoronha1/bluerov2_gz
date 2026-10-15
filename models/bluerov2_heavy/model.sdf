@@ -150,6 +150,30 @@
         <topic>sim/front_camera</topic>
       </sensor>
 
+      <!-- Ground-truth 2D boxes for objects tagged by the Label system, for
+           mira2_vision's gazebo_boxes detector (a YOLO stand-in in simulation).
+           Pose, FOV, resolution and rate must match front_camera_depth so the
+           boxes line up with its RGB image; publishes sim/front_camera/boxes. -->
+      <sensor name="front_camera_boxes" type="boundingbox_camera">
+        <gz_frame_id>front_camera_depth_optical</gz_frame_id>
+        <pose>0.25 0 0.05 0 0.4363 0</pose>
+        <camera>
+          <box_type>2d</box_type>
+          <horizontal_fov>1.204</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <topic>sim/front_camera/boxes</topic>
+      </sensor>
+
       <!-- Downward-facing (bottom) camera -->
       <sensor name="bottom_camera" type="camera">
         <pose>0 0 -0.05 0 1.5707963268 0</pose>
