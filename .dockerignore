@@ -1,3 +1,11 @@
 .idea/
 cmake-build-*
 .cmake-build-*
+
+# Context for docker/Dockerfile: COPY . . then a colcon build in the image.
+.git
+**/__pycache__/
+build/
+install/
+log/
+images/
